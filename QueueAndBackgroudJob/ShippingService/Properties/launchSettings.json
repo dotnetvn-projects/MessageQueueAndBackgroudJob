@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "ShippingService": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
