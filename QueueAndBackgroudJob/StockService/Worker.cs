@@ -55,7 +55,7 @@ namespace StockService
         public void MesageHandler(string body)
         {
             var data = JsonConvert.DeserializeObject<OrderQueue>(body);
-            Console.WriteLine(@$"Update stock for order: OrderId={data.OrderId}, Customer={data.CustomerName}, ProductId={data.ProductId}");
+            Console.WriteLine(@$"{DateTime.Now.ToString()} Update stock for order: OrderId={data.OrderId}, Customer={data.CustomerName}, ProductId={data.ProductId}");
         }
     }
 }

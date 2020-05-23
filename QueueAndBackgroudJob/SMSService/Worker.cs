@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -11,6 +6,9 @@ using QueueEngine;
 using QueueEngine.Behaviors;
 using QueueEngine.Models.QueueData;
 using QueueEngine.Models.QueueSetting;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SMSService
 {
@@ -55,7 +53,7 @@ namespace SMSService
         public void MesageHandler(string body)
         {
             var data = JsonConvert.DeserializeObject<OrderQueue>(body);
-            Console.WriteLine(@$"Send SmS for order: OrderId={data.OrderId}, Customer={data.CustomerName}, ProductId={data.ProductId}");
+            Console.WriteLine(@$"{DateTime.Now} Send SmS for order: OrderId={data.OrderId}, Customer={data.CustomerName}, ProductId={data.ProductId}");
        }
     }
 }

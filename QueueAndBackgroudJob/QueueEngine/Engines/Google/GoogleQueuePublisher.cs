@@ -35,9 +35,6 @@ namespace QueueEngine.Engines.Google
                 var toppicName = new TopicName(_queueSetting.ProjectId, topicName);
                 var publisher = PublisherClient.CreateAsync(toppicName, createSettings);
                 _publisher = publisher.Result;
-
-                //_publisher = PublisherServiceApiClient.Create();
-              //  _topicName = new TopicName(_queueSetting.ProjectId, topicName);
             }
         }
 

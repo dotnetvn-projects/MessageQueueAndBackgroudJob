@@ -44,7 +44,7 @@ namespace EmailService
                     var settingPath = _configuration.GetSection("MessageQueueSetting:GoogleQueueSetting");
                     settingPath.Bind(googleSetting);
 
-                    return QueueEngineFactory.CreateGoogleSubscriber(provider, googleSetting, 
+                    return QueueEngineFactory.CreateGoogleSubscriber(provider, googleSetting,
                         "EmailQueue", "EmailQueueSub", MesageHandler);
             }
 
@@ -54,7 +54,7 @@ namespace EmailService
         public void MesageHandler(string body)
         {
             var data = JsonConvert.DeserializeObject<OrderQueue>(body);
-            Console.WriteLine(@$"Send email for order: OrderId={data.OrderId}, Customer={data.CustomerName}, ProductId={data.ProductId}");
+            Console.WriteLine(@$"{DateTime.Now} Send email for order: OrderId={data.OrderId}, Customer={data.CustomerName}, ProductId={data.ProductId}");
         }
     }
 }

@@ -47,13 +47,14 @@ namespace QueueEngine.Engines.Google
         public async Task ProcessQueue()
         {
             await _subscriber.StartAsync(
-                 async (PubsubMessage message, CancellationToken cancel) =>
-                 {
-                     string body = Encoding.UTF8.GetString(message.Data.ToArray());
-                     _messageHandler(body);
+                 (PubsubMessage message, CancellationToken cancel) =>
+                {
+                    string body = Encoding.UTF8.GetString(message.Data.ToArray());
 
-                     return await Task.FromResult(SubscriberClient.Reply.Ack);
-                 });
+                    _messageHandler(body);
+
+                    return Task.FromResult(SubscriberClient.Reply.Ack);
+                });
         }
     }
 }

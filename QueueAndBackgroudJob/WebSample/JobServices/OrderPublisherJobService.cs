@@ -33,17 +33,14 @@ namespace WebSample.JobServices
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            Task.Run(async () =>
+            Task.Run(() =>
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     var inQueueItems = _queueService.ConsumeQueue(100);
                     if (inQueueItems.Any())
                     {
-                        foreach(var publisher in _publishers)
-                        {
-                            await publisher.SendMessages(inQueueItems);
-                        }                           
+                        Parallel.ForEach(_publishers, async publisher => { await publisher.SendMessages(inQueueItems); });
                     }
                 }
             }, cancellationToken);

@@ -54,7 +54,7 @@ namespace ShippingService
         public void MesageHandler(string body)
         {
             var data = JsonConvert.DeserializeObject<OrderQueue>(body);
-            Console.WriteLine(@$"Prepare shipping for order: OrderId={data.OrderId}, Customer={data.CustomerName}, ProductId={data.ProductId}");
+            Console.WriteLine(@$"{DateTime.Now.ToString()} Prepare shipping for order: OrderId={data.OrderId}, Customer={data.CustomerName}, ProductId={data.ProductId}");
         }
     }
 }
