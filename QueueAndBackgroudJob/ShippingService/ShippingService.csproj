@@ -8,4 +8,15 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.3" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QueueEngine\QueueEngine.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="google_credential.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

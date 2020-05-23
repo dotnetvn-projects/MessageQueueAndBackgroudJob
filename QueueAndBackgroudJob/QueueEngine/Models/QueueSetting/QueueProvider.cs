@@ -4,8 +4,10 @@ using System.Text;
 
 namespace QueueEngine.Models.QueueSetting
 {
-    public class GoogleQueueSetting : QueueSetting
+    public enum QueueProvider
     {
-        public string ProjectId { get; set; }
+        GOOGLE,
+        AWS,
+        AZURE
     }
 }

@@ -4,8 +4,8 @@ using System.Text;
 
 namespace QueueEngine.Models.QueueSetting
 {
-    public class GoogleQueueSetting : QueueSetting
+    public class QueueSetting
     {
-        public string ProjectId { get; set; }
+        public string CredentialFile { get; set; }
     }
 }

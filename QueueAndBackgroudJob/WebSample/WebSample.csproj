@@ -5,12 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Business\Business.csproj" />
     <ProjectReference Include="..\QueueEngine\QueueEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="JobServices\" />
+    <Content Update="google_credential.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
