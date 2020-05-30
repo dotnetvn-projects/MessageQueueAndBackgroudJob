@@ -5,21 +5,17 @@ using Grpc.Auth;
 using Newtonsoft.Json;
 using QueueEngine.Behaviors;
 using QueueEngine.Models.QueueSetting;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace QueueEngine.Engines.Google
 {
-    class GoogleQueuePublisher<T> : IQueuePublisher<T>
+    internal class GoogleQueuePublisher<T> : IQueuePublisher<T>
     {
         private PublisherClient _publisher;
         private readonly GoogleQueueSetting _queueSetting;
-        private SubscriptionName _subscriptionName;
-        private TopicName _topicName;
+
         public GoogleQueuePublisher(QueueSetting queueSetting, string topicName)
         {
             _queueSetting = queueSetting as GoogleQueueSetting;
@@ -54,7 +50,7 @@ namespace QueueEngine.Engines.Google
 
             pubsubMessage.Attributes.Add(attributes);
 
-            var messageResponse = await _publisher.PublishAsync(pubsubMessage);
+            await _publisher.PublishAsync(pubsubMessage);
         }
 
         public async Task SendMessages(IList<T> messages)

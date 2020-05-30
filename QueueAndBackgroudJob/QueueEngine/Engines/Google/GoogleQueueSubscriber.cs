@@ -1,12 +1,9 @@
-﻿using Google.Api.Gax;
-using Google.Apis.Auth.OAuth2;
+﻿using Google.Apis.Auth.OAuth2;
 using Google.Cloud.PubSub.V1;
 using Grpc.Auth;
-using Grpc.Core;
 using QueueEngine.Behaviors;
 using QueueEngine.Models.QueueSetting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -14,21 +11,21 @@ using System.Threading.Tasks;
 
 namespace QueueEngine.Engines.Google
 {
-    class GoogleQueueSubscriber : IQueueSubscriber
+    internal class GoogleQueueSubscriber : IQueueSubscriber
     {
         private SubscriberClient _subscriber;
         private readonly GoogleQueueSetting _queueSetting;
         private SubscriptionName _subscriptionName;
         private readonly Action<string> _messageHandler;
 
-        public GoogleQueueSubscriber(QueueSetting queueSetting, string topicName, string subscriptionName, Action<string> messageHandler)
+        public GoogleQueueSubscriber(QueueSetting queueSetting, string subscriptionName, Action<string> messageHandler)
         {
             _queueSetting = queueSetting as GoogleQueueSetting;
             _messageHandler = messageHandler;
-            InitializeQueue(topicName, subscriptionName);
+            InitializeQueue(subscriptionName);
         }
 
-        private void InitializeQueue(string topicName, string subscriptionName)
+        private void InitializeQueue(string subscriptionName)
         {
             if (_subscriber == null)
             {

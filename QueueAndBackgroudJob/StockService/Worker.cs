@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -11,6 +6,9 @@ using QueueEngine;
 using QueueEngine.Behaviors;
 using QueueEngine.Models.QueueData;
 using QueueEngine.Models.QueueSetting;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace StockService
 {
@@ -29,33 +27,48 @@ namespace StockService
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await _subscriber.ProcessQueue();
+            if (_subscriber != null)
+            {
+                await _subscriber.ProcessQueue();
+            }
         }
 
         private IQueueSubscriber CreateSubscriber()
         {
-            var providerSetting = _configuration["MessageQueueSetting:Provider"];
-            var provider = Common.ParseEnum<QueueProvider>(providerSetting);
-
-            switch (provider)
+            try
             {
-                case QueueProvider.GOOGLE:
+                var providerSetting = _configuration["MessageQueueSetting:Provider"];
+                var provider = Common.ParseEnum<QueueProvider>(providerSetting);
 
-                    var googleSetting = new GoogleQueueSetting();
-                    var settingPath = _configuration.GetSection("MessageQueueSetting:GoogleQueueSetting");
-                    settingPath.Bind(googleSetting);
+                switch (provider)
+                {
+                    case QueueProvider.GOOGLE:
 
-                    return QueueEngineFactory.CreateGoogleSubscriber(provider, googleSetting,
-                        "StockQueue", "StockQueueSub", MesageHandler);
+                        var googleSetting = new GoogleQueueSetting();
+                        var settingPath = _configuration.GetSection("MessageQueueSetting:GoogleQueueSetting");
+                        settingPath.Bind(googleSetting);
+
+                        return QueueEngineFactory.CreateGoogleSubscriber(provider, googleSetting, "StockQueueSub", MesageHandler);
+                }
             }
-
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
             return default;
         }
 
         public void MesageHandler(string body)
         {
-            var data = JsonConvert.DeserializeObject<OrderQueue>(body);
-            Console.WriteLine(@$"{DateTime.Now.ToString()} Update stock for order: OrderId={data.OrderId}, Customer={data.CustomerName}, ProductId={data.ProductId}");
+            try
+            {
+                var data = JsonConvert.DeserializeObject<OrderQueue>(body);
+                Console.WriteLine(@$"{DateTime.Now} Update stock for order: OrderId={data.OrderId}, Customer={data.CustomerName}, ProductId={data.ProductId}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
         }
     }
 }

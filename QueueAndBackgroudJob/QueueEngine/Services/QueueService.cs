@@ -1,13 +1,11 @@
 ﻿using QueueEngine.Interfaces;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace QueueEngine.Services
 {
-    class QueueService<T> : IQueueService<T>
+    internal class QueueService<T> : IQueueService<T>
     {
         private ConcurrentQueue<T> _queue = new ConcurrentQueue<T>();
 
@@ -27,8 +25,8 @@ namespace QueueEngine.Services
             while (i <= lenght)
             {
                 _queue.TryDequeue(out T data);
-                if(data != null)
-                   result.Add(data);
+                if (data != null)
+                    result.Add(data);
                 i++;
             }
             return result;

@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -10,27 +10,38 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SMSService
+namespace OrderAPI.JobServices
 {
-    public class Worker : BackgroundService
+    public class SmSSubcriberJobService : IHostedService
     {
-        private readonly ILogger<Worker> _logger;
+        private readonly ILogger<SmSSubcriberJobService> _logger;
         private readonly IQueueSubscriber _subscriber;
         private readonly IConfiguration _configuration;
 
-        public Worker(ILogger<Worker> logger, IConfiguration configuration)
+        public SmSSubcriberJobService(ILogger<SmSSubcriberJobService> logger,
+            IConfiguration configuration)
         {
             _configuration = configuration;
             _subscriber = CreateSubscriber();
             _logger = logger;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            if (_subscriber != null)
+            Task.Run(async () =>
             {
-                await _subscriber.ProcessQueue();
-            }
+                if (_subscriber != null)
+                {
+                    await _subscriber.ProcessQueue();
+                }
+            }, cancellationToken);
+          
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
         }
 
         private IQueueSubscriber CreateSubscriber()

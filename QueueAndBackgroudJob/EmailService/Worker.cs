@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using QueueEngine;
 using QueueEngine.Behaviors;
-using QueueEngine.Interfaces;
 using QueueEngine.Models.QueueData;
 using QueueEngine.Models.QueueSetting;
 using System;
@@ -28,24 +27,35 @@ namespace EmailService
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await _subscriber.ProcessQueue();
+            if (_subscriber != null)
+            {
+                await _subscriber.ProcessQueue();
+            }
         }
 
         private IQueueSubscriber CreateSubscriber()
         {
-            var providerSetting = _configuration["MessageQueueSetting:Provider"];
-            var provider = Common.ParseEnum<QueueProvider>(providerSetting);
-
-            switch (provider)
+            try
             {
-                case QueueProvider.GOOGLE:
+                var providerSetting = _configuration["MessageQueueSetting:Provider"];
+                var provider = Common.ParseEnum<QueueProvider>(providerSetting);
 
-                    var googleSetting = new GoogleQueueSetting();
-                    var settingPath = _configuration.GetSection("MessageQueueSetting:GoogleQueueSetting");
-                    settingPath.Bind(googleSetting);
+                switch (provider)
+                {
+                    case QueueProvider.GOOGLE:
 
-                    return QueueEngineFactory.CreateGoogleSubscriber(provider, googleSetting,
-                        "EmailQueue", "EmailQueueSub", MesageHandler);
+                        var googleSetting = new GoogleQueueSetting();
+                        var settingPath = _configuration.GetSection("MessageQueueSetting:GoogleQueueSetting");
+                        settingPath.Bind(googleSetting);
+
+                        return QueueEngineFactory.CreateGoogleSubscriber(provider, googleSetting, "EmailQueueSub", MesageHandler);
+
+                        //
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
             }
 
             return default;
@@ -53,8 +63,15 @@ namespace EmailService
 
         public void MesageHandler(string body)
         {
-            var data = JsonConvert.DeserializeObject<OrderQueue>(body);
-            Console.WriteLine(@$"{DateTime.Now} Send email for order: OrderId={data.OrderId}, Customer={data.CustomerName}, ProductId={data.ProductId}");
+            try
+            {
+                var data = JsonConvert.DeserializeObject<OrderQueue>(body);
+                Console.WriteLine(@$"{DateTime.Now} Send email for order: OrderId={data.OrderId}, Customer={data.CustomerName}, ProductId={data.ProductId}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
         }
     }
 }
